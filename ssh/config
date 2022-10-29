@@ -2,18 +2,18 @@ Host github.com
         User git
         Hostname github.com
         PreferredAuthentications publickey
-        IdentityFile /home/pallaire/.ssh/pallaire-github
+        IdentityFile ~/.ssh/pallaire-github
 
 Host gitlab.com
         User git
         Hostname gitlab.com
         PreferredAuthentications publickey
-        IdentityFile /home/pallaire/.ssh/pallaire-gitlab
+        IdentityFile ~/.ssh/pallaire-gitlab
 
 Host pallaire.com
         User pallaire
         Hostname pallaire.com
         PreferredAuthentications publickey
-        IdentityFile /home/pallaire/.ssh/pallaire-hostgator
+        IdentityFile ~/.ssh/pallaire-hostgator
 	HostKeyAlgorithms +ssh-rsa
 	PubkeyAcceptedKeyTypes +ssh-rsa
