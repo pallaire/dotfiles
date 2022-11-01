@@ -6,8 +6,8 @@
 <Multi_key> <minus> <space>		: "~"	asciitilde # TILDE
 <Multi_key> <space> <minus>		: "~"	asciitilde # TILDE
 <dead_acute> <space>			: "'"	apostrophe # APOSTROPHE
-<dead_acute> <dead_acute>		: "´"	acute # ACUTE ACCENT
-<Multi_key> <apostrophe> <apostrophe>	: "´"	acute # ACUTE ACCENT
+<dead_acute> <dead_acute>		: "''"	acute # ACUTE ACCENT
+<Multi_key> <apostrophe> <apostrophe>	: "''"	acute # ACUTE ACCENT
 <dead_grave> <space>			: "`"	grave # GRAVE ACCENT
 <dead_grave> <dead_grave>		: "`"	grave # GRAVE ACCENT
 <dead_circumflex> <space>		: "^"	asciicircum # CIRCUMFLEX ACCENT
@@ -29,8 +29,8 @@
 <Multi_key> <parenleft> <space>		: "˘"	breve # BREVE
 <dead_abovedot> <space>			: "˙"	abovedot # DOT ABOVE
 <dead_abovedot> <dead_abovedot>		: "˙"	abovedot # DOT ABOVE
-<dead_diaeresis> <dead_diaeresis>	: "¨"	diaeresis # DIAERESIS
-<Multi_key> <quotedbl> <quotedbl>	: "¨"	diaeresis # DIAERESIS
+<dead_diaeresis> <dead_diaeresis>	: "\"\""	diaeresis # DIAERESIS
+<Multi_key> <quotedbl> <quotedbl>	: "\"\""	diaeresis # DIAERESIS
 <dead_diaeresis> <space>		: "\""	quotedbl # QUOTATION MARK
 <dead_doubleacute> <space>		: "˝"	U2dd # DOUBLE ACUTE ACCENT
 <dead_doubleacute> <dead_doubleacute>	: "˝"	U2dd # DOUBLE ACUTE ACCENT
