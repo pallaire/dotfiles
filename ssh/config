@@ -15,5 +15,9 @@ Host pallaire.com
         Hostname pallaire.com
         PreferredAuthentications publickey
         IdentityFile ~/.ssh/pallaire-hostgator
-	HostKeyAlgorithms +ssh-rsa
-	PubkeyAcceptedKeyTypes +ssh-rsa
+        HostKeyAlgorithms +ssh-rsa
+	      PubkeyAcceptedKeyTypes +ssh-rsa
+
+Host fastbox
+        User pallaire
+        Hostname 192.168.0.175

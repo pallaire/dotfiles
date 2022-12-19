@@ -39,6 +39,9 @@ Plugin 'morhetz/gruvbox'
 " Editor Config support
 "Plugin 'editorconfig/editorconfig-vim'
 
+" JS / React
+Plugin 'maxmellon/vim-jsx-pretty'
+
 " NOTE to install plugins:   :PluginInstall
 
 
