@@ -18,7 +18,7 @@ return require('packer').startup(function(use)
   use 'sonph/onehalf'
 
   -- NVimTree
-  -- Be sure to install FONT first, on mac: 
+  -- Be sure to install FONT first, on mac:
   -- brew tap homebrew/cask-fonts
   -- brew cask install font-hack-nerd-font
   use {
@@ -29,11 +29,15 @@ return require('packer').startup(function(use)
     tag = 'nightly' -- optional, updated every week. (see issue #1193)
   }
 
+
+  -- TreeSitter
+  -- This plugin does better highlighting than the vanilla nvim
   use {
-    'nvim-treesitter/nvim-treesitter', 
+    'nvim-treesitter/nvim-treesitter',
     run = ':TSUpdate'
   }
 
+  -- LSP is for the intellisense
   use {
     'VonHeikemen/lsp-zero.nvim',
     requires = {
@@ -54,6 +58,12 @@ return require('packer').startup(function(use)
       {'L3MON4D3/LuaSnip'},
       {'rafamadriz/friendly-snippets'},
     }
+  }
+
+  -- Telescope is a fuzzy finder
+  use {
+    'nvim-telescope/telescope.nvim', tag = '0.1.0',
+    requires = { {'nvim-lua/plenary.nvim'} }
   }
 
   -- Put this at the end after all plugins

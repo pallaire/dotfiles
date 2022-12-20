@@ -4,7 +4,7 @@ function RetabAndClean()
   vim.cmd.retab()
 
   -- remove trailing spaces
-  vim.cmd.s {'/\\s\\+$//g', range = {1,vim.fn.line("$")}}
+  vim.cmd.s {'/\\s\\+$//ge', range = {1,vim.fn.line("$")}}
 
   -- Toggle highlight search
   vim.opt.hlsearch = false
