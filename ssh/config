@@ -4,6 +4,12 @@ Host github.com
         PreferredAuthentications publickey
         IdentityFile ~/.ssh/pallaire-github
 
+Host bitbucket.org
+        User git
+        Hostname bitbucket.org
+        PreferredAuthentications publickey
+        IdentityFile ~/.ssh/pallaire-bitbucket
+
 Host gitlab.com
         User git
         Hostname gitlab.com
@@ -21,3 +27,9 @@ Host pallaire.com
 Host fastbox
         User pallaire
         Hostname 192.168.0.175
+
+Host awsvpn
+        User openvpnas
+        Hostname ec2-99-79-53-181.ca-central-1.compute.amazonaws.com
+        PreferredAuthentications publickey
+        IdentityFile ~/.ssh/pallaire-aws-montreal
