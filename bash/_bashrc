@@ -1,0 +1,6 @@
+__PS1_BEFORE='\n\n'
+__PS1_USER='\[\e[97;104m\] \u '
+__PS1_LOCATION='\[\e[30;43m\] \w '
+__PS1_GIT_BRANCH='\[\e[97;45m\] `__git_ps1` '
+__PS1_AFTER='\[\e[0m\]\n> '
+export PS1="${__PS1_BEFORE}${__PS1_USER}${__PS1_LOCATION}${__PS1_GIT_BRANCH}${__PS1_AFTER}"
