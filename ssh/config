@@ -22,14 +22,10 @@ Host pallaire.com
         PreferredAuthentications publickey
         IdentityFile ~/.ssh/pallaire-hostgator
         HostKeyAlgorithms +ssh-rsa
-	      PubkeyAcceptedKeyTypes +ssh-rsa
+	PubkeyAcceptedKeyTypes +ssh-rsa
 
-Host fastbox
-        User pallaire
-        Hostname 192.168.0.175
-
-Host awsvpn
+Host openvpn
         User openvpnas
-        Hostname ec2-99-79-53-181.ca-central-1.compute.amazonaws.com
+        Hostname 15.156.116.163
         PreferredAuthentications publickey
-        IdentityFile ~/.ssh/pallaire-aws-montreal
+        IdentityFile ~/.ssh/pallaire-amazon-montreal.pem
