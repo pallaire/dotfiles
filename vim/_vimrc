@@ -167,3 +167,8 @@ menu Pallaire.Utils.Conversion.Remove\ BOM :setlocal nobomb<CR>
 menu Pallaire.Utils.Conversion.To\ UTF8 :set fileencoding=utf-8<CR>
 menu Pallaire.Utils.Reload\ vimrc :so ~/.vimrc<CR>
 
+
+
+" Build and run
+nnoremap <F5> :!g++ -g % -o %.exe<cr>
+
