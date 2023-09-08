@@ -97,6 +97,7 @@ set foldmethod=indent           " folding of code
 set hlsearch
 set ignorecase                  " ignore case when searching
 set incsearch                   " do incremental searching
+set mouse=nvi
 set nobackup                    " do not keep a backup file
 set noexpandtab
 set nowrap
@@ -140,8 +141,8 @@ autocmd vimenter * NERDTree " auto start nerdtree on launch
 autocmd vimenter * wincmd p
 "autocmd StdinReadPre * let s:std_in=1
 "autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-"autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-"
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
 
 
 "My own menu with my favorite color scheme LIGHT
