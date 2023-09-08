@@ -33,6 +33,8 @@ alias la='ls -A'
 alias l='ls -CF'
 alias lsa='ls -alFA'
 
+alias myneofetch='neofetch --kitty ~/Pictures/Wallpapers/ArchLogo.png --size 549px'
+
 
 # Get __git_ps1 for the prompt
 source /usr/share/git/git-prompt.sh
