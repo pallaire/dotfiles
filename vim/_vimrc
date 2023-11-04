@@ -108,6 +108,7 @@ set smartindent                 " smart indent
 set splitbelow
 set splitright
 set ttyfast                     " smoother changes
+set visualbell
 
 set tabstop=2
 set softtabstop=2
@@ -168,7 +169,8 @@ menu Pallaire.Utils.Conversion.Remove\ BOM :setlocal nobomb<CR>
 menu Pallaire.Utils.Conversion.To\ UTF8 :set fileencoding=utf-8<CR>
 menu Pallaire.Utils.Reload\ vimrc :so ~/.vimrc<CR>
 
-
+"Delete trailing whitespace on save
+autocmd BufWritePre * :%s/\s\+$//e
 
 " Build and run
 nnoremap <F5> :!g++ -g % -o %.exe<cr>
