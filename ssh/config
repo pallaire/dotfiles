@@ -26,6 +26,13 @@ Host pallaire.com
 
 Host openvpn
         User openvpnas
-        Hostname 15.156.116.163
+        Hostname 15.223.75.98
         PreferredAuthentications publickey
         IdentityFile ~/.ssh/pallaire-amazon-montreal.pem
+
+Host awscanada
+        User ubuntu
+        Hostname ec2-3-99-60-210.ca-central-1.compute.amazonaws.com
+        PreferredAuthentications publickey
+        IdentityFile ~/.ssh/pallaire-amazon-montreal.pem
+        DynamicForward 8080
