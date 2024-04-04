@@ -1,0 +1,25 @@
+# Modify our PATH
+PATH=$PATH:$HOME/bin
+
+# SOURCE this file at the end of the default .bashrc file for the system
+#
+# INSTALL the following: lsd duf batcat btop neovim
+
+# some more ls aliases
+alias ls='lsd'
+alias lsa='lsd -la'
+alias ll='lsd -l'
+alias lls='lsd -lS'
+alias llt='lsd -lt'
+
+alias top='btop'
+alias vim='nvim'
+alias du='duf .'
+alias df='duf'
+alias cat='batcat'
+
+# PROMPT
+# INSTALL Starship for prompt: 
+# curl -sS https://starship.rs/install.sh | sh
+eval "$(starship init bash)"
+
