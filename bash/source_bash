@@ -3,7 +3,7 @@ PATH=$PATH:$HOME/bin
 
 # SOURCE this file at the end of the default .bashrc file for the system
 #
-# INSTALL the following: lsd duf batcat btop neovim
+# INSTALL the following: lsd duf dust bat(or batcat) btop neovim
 
 # some more ls aliases
 alias ls='lsd'
@@ -14,9 +14,16 @@ alias llt='lsd -lt'
 
 alias top='btop'
 alias vim='nvim'
-alias du='duf .'
+alias du='dust -d 1'
 alias df='duf'
-alias cat='batcat'
+
+if ! command -v batcat &> /dev/null
+then
+	alias cat='bat'
+else
+	alias cat='batcat'
+fi
+
 
 # PROMPT
 # INSTALL Starship for prompt: 
