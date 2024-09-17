@@ -1,0 +1,62 @@
+services:
+
+  frigate:
+    container_name: frigate
+    image: ghcr.io/blakeblackshear/frigate:stable
+    privileged: true # needed to access Coral TPU
+    env_file: 
+      - ./frigate_secrets
+    restart: unless-stopped
+    #    network_mode: host
+    volumes:
+      # host : in docker
+      - /dev/bus/usb:/dev/bus/usb # pass the whole USB bus
+      - /etc/localtime:/etc/localtime:ro # setup the container timezone
+      - ./frigate:/config # configs and db location
+      - ./frigate_storage:/media/frigate # where to save the file
+
+      # RAM drive
+      - type: tmpfs # Optional: 1GB of memory, reduces SSD/SD Card wear
+        target: /tmp/cache
+        tmpfs:
+          size: 1000000000
+
+    ports:
+      - "1984:1984"
+      - "5000:5000"
+      - "8554:8554"
+      - "8555:8555"
+      - "8971:8971"
+
+    devices:
+      - /dev/dri/renderD128
+    shm_size: "512mb"
+
+
+  mosquitto:
+    container_name: mosquitto
+    image: eclipse-mosquitto
+    hostname: mosquitto
+    restart: unless-stopped
+    # network_mode: host
+    volumes:
+      - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto/config/password.txt:/mosquitto/config/password.txt
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+
+
+  homeassistant:
+    container_name: homeassistant
+    image: ghcr.io/home-assistant/home-assistant:stable
+    privileged: true
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+        - /etc/localtime:/etc/localtime:ro
+        - ./homeassistant:/config
+        - /run/dbus:/run/dbus:ro
+        - ./frigate_storage:/frigate_storage

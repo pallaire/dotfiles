@@ -1,0 +1,249 @@
+mqtt:
+  enabled: true
+  host: 192.168.50.70
+  topic_prefix: frigate  
+  user: mqttuser
+  password: mqttpass
+  
+detectors: # <---- add detectors
+  coral:
+    type: edgetpu
+    device: usb
+
+go2rtc:
+  streams:
+    street:
+      - rtsp://{FRIGATE_CAM_ADMIN_USER}:{FRIGATE_CAM_ADMIN_PW}@192.168.0.201:554/cam/realmonitor?channel=1&subtype=0
+    street_sub:
+      - rtsp://{FRIGATE_CAM_ADMIN_USER}:{FRIGATE_CAM_ADMIN_PW}@192.168.0.201:554/cam/realmonitor?channel=1&subtype=1
+    front_door:
+      - rtsp://{FRIGATE_CAM_ADMIN_USER}:{FRIGATE_CAM_ADMIN_PW}@192.168.0.202:554/cam/realmonitor?channel=1&subtype=0
+    front_door_sub:
+      - rtsp://{FRIGATE_CAM_ADMIN_USER}:{FRIGATE_CAM_ADMIN_PW}@192.168.0.202:554/cam/realmonitor?channel=1&subtype=1
+    side_north:
+      - rtsp://{FRIGATE_CAM_ONVIF_USER}:{FRIGATE_CAM_ONVIF_PW}@192.168.0.203:554/Streaming/Channels/101?transportmode=unicast&profile=Profile_1
+    side_north_sub:
+      - rtsp://{FRIGATE_CAM_ONVIF_USER}:{FRIGATE_CAM_ONVIF_PW}@192.168.0.203:554/Streaming/Channels/102?transportmode=unicast&profile=Profile_2
+    patio:
+      - rtsp://{FRIGATE_CAM_ONVIF_USER}:{FRIGATE_CAM_ONVIF_PW}@192.168.0.204:554/Streaming/Channels/101?transportmode=unicast&profile=Profile_1
+    patio_sub:
+      - rtsp://{FRIGATE_CAM_ONVIF_USER}:{FRIGATE_CAM_ONVIF_PW}@192.168.0.204:554/Streaming/Channels/102?transportmode=unicast&profile=Profile_2
+    side_south:
+      - rtsp://{FRIGATE_CAM_ONVIF_USER}:{FRIGATE_CAM_ONVIF_PW}@192.168.0.205:554/Streaming/Channels/101?transportmode=unicast&profile=Profile_1
+    side_south_sub:
+      - rtsp://{FRIGATE_CAM_ONVIF_USER}:{FRIGATE_CAM_ONVIF_PW}@192.168.0.205:554/Streaming/Channels/102?transportmode=unicast&profile=Profile_2
+    grass:
+      - "ffmpeg:rtsp://{FRIGATE_CAM_ONVIF_USER}:{FRIGATE_CAM_ONVIF_PW}@192.168.0.206:554/Streaming/Channels/101?transportmode=unicast&profile=Profile_1#video=h264#hardware"
+    grass_sub:
+      - "ffmpeg:rtsp://{FRIGATE_CAM_ONVIF_USER}:{FRIGATE_CAM_ONVIF_PW}@192.168.0.206:554/Streaming/Channels/102?transportmode=unicast&profile=Profile_2#video=h264#hardware"
+    driveway:
+      - rtsp://{FRIGATE_CAM_ADMIN_USER}:{FRIGATE_CAM_ADMIN_PW}@192.168.0.208:554/cam/realmonitor?channel=1&subtype=0
+    driveway_sub:
+      - rtsp://{FRIGATE_CAM_ADMIN_USER}:{FRIGATE_CAM_ADMIN_PW}@192.168.0.208:554/cam/realmonitor?channel=1&subtype=1
+  webrtc:
+    listen: :8555
+
+
+cameras:
+  street: # <------ Name the camera
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: 
+            rtsp://{FRIGATE_CAM_ADMIN_USER}:{FRIGATE_CAM_ADMIN_PW}@192.168.0.201:554/cam/realmonitor?channel=1&subtype=1
+          roles:
+            - detect
+        - path: 
+            rtsp://{FRIGATE_CAM_ADMIN_USER}:{FRIGATE_CAM_ADMIN_PW}@192.168.0.201:554/cam/realmonitor?channel=1&subtype=0
+          roles:
+            - record
+      hwaccel_args: preset-vaapi
+    detect:
+      enabled: true
+      fps: 7
+      width: 704
+      height: 480
+    record:
+      enabled: true
+    motion:
+      mask:
+        - 0.018,0.929,0.271,0.926,0.271,0.981,0.019,0.981
+        - 0.628,0.386,0.821,0.999,0.999,0.996,0.999,0.174,0.864,0.051,0.863,-0.001,0.001,-0.001,0,0.631,0.227,0.646,0.418,0.657,0.489,0.511,0.479,0.282,0.489,0.129,0.618,0.125,0.679,0.177
+    zones:
+      StreetPropertyZone:
+        coordinates: 0,0.518,0.405,0.386,0.677,0.374,0.799,0.704,0.999,0.997,0,1
+        loitering_time: 0
+
+
+        inertia: 3
+  front_door: # <------ Name the camera
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: 
+            rtsp://{FRIGATE_CAM_ADMIN_USER}:{FRIGATE_CAM_ADMIN_PW}@192.168.0.202:554/cam/realmonitor?channel=1&subtype=1
+          roles:
+            - detect
+        - path: 
+            rtsp://{FRIGATE_CAM_ADMIN_USER}:{FRIGATE_CAM_ADMIN_PW}@192.168.0.202:554/cam/realmonitor?channel=1&subtype=0
+          roles:
+            - record
+      hwaccel_args: preset-vaapi
+    detect:
+      enabled: true
+      fps: 7
+      width: 704
+      height: 480
+    record:
+      enabled: true
+    motion:
+      mask: 0.001,0.004,0.269,0.004,0.276,0.083,0.215,0.116,0.223,0.566,0,0.7
+
+  side_north: # <------ Name the camera
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: 
+            rtsp://{FRIGATE_CAM_ONVIF_USER}:{FRIGATE_CAM_ONVIF_PW}@192.168.0.203:554/Streaming/Channels/102?transportmode=unicast&profile=Profile_2
+          roles:
+            - detect
+        - path: 
+            rtsp://{FRIGATE_CAM_ONVIF_USER}:{FRIGATE_CAM_ONVIF_PW}@192.168.0.203:554/Streaming/Channels/101?transportmode=unicast&profile=Profile_1
+          roles:
+            - record
+    detect:
+      enabled: true
+      fps: 6
+      width: 640
+      height: 480
+    record:
+      enabled: true
+    motion:
+      mask:
+        - 0.345,0,0.339,0.199,0.389,0.201,0.404,0.153,1,0.454,1,0
+        - 0.032,0.67,0.09,0.671,0.096,0.981,0.035,0.981
+
+  patio: # <------ Name the camera
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: 
+            rtsp://{FRIGATE_CAM_ONVIF_USER}:{FRIGATE_CAM_ONVIF_PW}@192.168.0.204:554/Streaming/Channels/102?transportmode=unicast&profile=Profile_2
+          roles:
+            - detect
+        - path: 
+            rtsp://{FRIGATE_CAM_ONVIF_USER}:{FRIGATE_CAM_ONVIF_PW}@192.168.0.204:554/Streaming/Channels/101?transportmode=unicast&profile=Profile_1
+          roles:
+            - record
+    detect:
+      enabled: true
+      fps: 6
+      width: 640
+      height: 480
+    record:
+      enabled: true
+    motion:
+      mask:
+        - 0.227,-0.001,0.289,0.165,0.383,0.132,0.406,0.001
+        - 0.638,0,0.615,0.31,0.8,0.438,0.999,0.47,0.999,-0.001
+        - 0.014,0.924,0.317,0.925,0.318,0.974,0.013,0.972
+
+  side_south: # <------ Name the camera
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: 
+            rtsp://{FRIGATE_CAM_ONVIF_USER}:{FRIGATE_CAM_ONVIF_PW}@192.168.0.205:554/Streaming/Channels/102?transportmode=unicast&profile=Profile_2
+          roles:
+            - detect
+        - path: 
+            rtsp://{FRIGATE_CAM_ONVIF_USER}:{FRIGATE_CAM_ONVIF_PW}@192.168.0.205:554/Streaming/Channels/101?transportmode=unicast&profile=Profile_1
+          roles:
+            - record
+    detect:
+      enabled: true
+      fps: 6
+      width: 640
+      height: 480
+    record:
+      enabled: true
+    motion:
+      mask:
+        - 0.271,0,0.725,0.171,1,0.332,0.998,0
+        - 0.044,0.678,0.083,0.68,0.085,0.98,0.044,0.981
+
+  grass: # <------ Name the camera
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: 
+            "ffmpeg:rtsp://{FRIGATE_CAM_ONVIF_USER}:{FRIGATE_CAM_ONVIF_PW}@192.168.0.206:554/Streaming/Channels/102?transportmode=unicast&profile=Profile_2#video=h264#hardware"
+          roles:
+            - detect
+        - path: 
+            "ffmpeg:rtsp://{FRIGATE_CAM_ONVIF_USER}:{FRIGATE_CAM_ONVIF_PW}@192.168.0.206:554/Streaming/Channels/101?transportmode=unicast&profile=Profile_1#video=h264#hardware"
+          roles:
+            - record
+    detect:
+      enabled: true
+      fps: 6
+      width: 640
+      height: 480
+    record:
+      enabled: true
+    motion:
+      mask:
+        - 0.001,0,0.359,0,0.358,0.051,0.302,0.084,0.232,0.19,0.204,0.373,0.102,0.612,0.092,0.685,0.083,0.996,0.001,0.997
+        - 0.603,0,0.604,0.087,0.954,0.207,0.999,0.282,0.999,0
+        - 0.583,0.996,0.6,0.887,1,0.512,1,0.741,0.84,1
+
+  driveway: # <------ Name the camera
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: 
+            rtsp://{FRIGATE_CAM_ADMIN_USER}:{FRIGATE_CAM_ADMIN_PW}@192.168.0.208:554/cam/realmonitor?channel=1&subtype=1
+          roles:
+            - detect
+        - path: 
+            rtsp://{FRIGATE_CAM_ADMIN_USER}:{FRIGATE_CAM_ADMIN_PW}@192.168.0.208:554/cam/realmonitor?channel=1&subtype=0
+          roles:
+            - record
+      hwaccel_args: preset-vaapi
+    detect:
+      enabled: true
+      fps: 7
+      width: 704
+      height: 480
+    record:
+      enabled: true
+    motion:
+      mask: 
+        0.001,-0.001,1,0,1,0.495,0.846,0.486,0.796,0.337,0.587,0.312,0.473,0.497,0.36,0.388,0,0.411,-0.001,0.001
+    zones:
+      DrivewayZone:
+        coordinates: 0,0.472,0.458,0.515,0.57,0.482,0.988,0.509,1,1,0,1
+        loitering_time: 0
+        inertia: 3
+
+objects:
+  track:
+    - person
+    - dog
+    - cat
+    - package
+
+record:
+  enabled: true
+  retain:
+    days: 30
+    mode: all
+  events:
+    retain:
+      default: 60
+      mode: motion
+
+snapshots:
+  enabled: true
+
+version: 0.14
