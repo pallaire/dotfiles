@@ -20,3 +20,6 @@ ocrmypdf -l eng+fra --force-ocr -d $tmpname $outname
 # Delete all images
 rm /home/pallaire/Documents/scans/scanpages*.jpg
 rm /home/pallaire/Documents/scans/scanpages.pdf
+
+# Show the new file
+pdfarranger $outname &
