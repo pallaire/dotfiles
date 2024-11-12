@@ -3,7 +3,7 @@ PATH=$PATH:$HOME/bin
 
 # SOURCE this file at the end of the default .bashrc file for the system
 #
-# INSTALL the following: lsd duf dust bat(or batcat) btop neovim
+# INSTALL the following: lsd duf dust bat(or batcat) btop neovim yazi
 
 # some more ls aliases
 alias ls='lsd'
@@ -16,6 +16,7 @@ alias top='btop'
 alias vim='nvim'
 alias du='dust -d 1'
 alias df='duf'
+alias mc='yazi' # map midnight commander mc to yazi
 
 if ! command -v batcat &> /dev/null
 then
