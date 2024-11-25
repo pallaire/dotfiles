@@ -9,7 +9,7 @@ tmpname=/home/pallaire/Documents/scans/scanpages.pdf
 outname="/home/pallaire/Documents/scans/$(date +%Y-%m-%d_%H:%M:%S)_scan.pdf"
 
 # Scan all the page with duplex to temp PNGs
-scanimage --device-name="fujitsu:ScanSnap iX500:4624" --format=jpeg --mode=Lineart --resolution=200 --batch=/home/pallaire/Documents/scans/scanpages%03d.jpg --source="ADF Duplex"
+scanimage --device-name="fujitsu:ScanSnap iX500:4624" --format=jpeg --mode Color --resolution 200 --brightness 32 --contrast 32 --source "ADF Duplex" --batch=/home/pallaire/Documents/scans/scanpages%03d.jpg
 
 # Merge all images to pdf
 magick convert /home/pallaire/Documents/scans/scanpages*.jpg $tmpname
