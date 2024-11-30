@@ -1,38 +1,42 @@
 Host github.com
-        User git
-        Hostname github.com
-        PreferredAuthentications publickey
-        IdentityFile ~/.ssh/pallaire-github
+  User git
+  Hostname github.com
+  PreferredAuthentications publickey
+  IdentityFile ~/.ssh/pallaire-github
 
 Host bitbucket.org
-        User git
-        Hostname bitbucket.org
-        PreferredAuthentications publickey
-        IdentityFile ~/.ssh/pallaire-bitbucket
+  User git
+  Hostname bitbucket.org
+  PreferredAuthentications publickey
+  IdentityFile ~/.ssh/pallaire-bitbucket
 
 Host gitlab.com
-        User git
-        Hostname gitlab.com
-        PreferredAuthentications publickey
-        IdentityFile ~/.ssh/pallaire-gitlab
+  User git
+  Hostname gitlab.com
+  PreferredAuthentications publickey
+  IdentityFile ~/.ssh/pallaire-gitlab
 
 Host pallaire.com
-        User pallaire
-        Hostname pallaire.com
-        PreferredAuthentications publickey
-        IdentityFile ~/.ssh/pallaire-hostgator
-        HostKeyAlgorithms +ssh-rsa
-	PubkeyAcceptedKeyTypes +ssh-rsa
+  User pallaire
+  Hostname pallaire.com
+  PreferredAuthentications publickey
+  IdentityFile ~/.ssh/pallaire-hostgator
+  HostKeyAlgorithms +ssh-rsa
+  PubkeyAcceptedKeyTypes +ssh-rsa
 
 Host openvpn
-        User openvpnas
-        Hostname 15.223.75.98
-        PreferredAuthentications publickey
-        IdentityFile ~/.ssh/pallaire-amazon-montreal.pem
+  User openvpnas
+  Hostname 15.223.75.98
+  PreferredAuthentications publickey
+  IdentityFile ~/.ssh/pallaire-amazon-montreal.pem
 
 Host awscanada
-        User ubuntu
-        Hostname ec2-3-99-60-210.ca-central-1.compute.amazonaws.com
-        PreferredAuthentications publickey
-        IdentityFile ~/.ssh/pallaire-amazon-montreal.pem
-        DynamicForward 8080
+  User ubuntu
+  Hostname ec2-3-99-60-210.ca-central-1.compute.amazonaws.com
+  PreferredAuthentications publickey
+  IdentityFile ~/.ssh/pallaire-amazon-montreal.pem
+  DynamicForward 8080
+
+Host luc
+  User pallaire
+  Hostname jitsi.charland.org
