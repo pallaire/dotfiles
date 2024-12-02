@@ -24,12 +24,6 @@ Host pallaire.com
   HostKeyAlgorithms +ssh-rsa
   PubkeyAcceptedKeyTypes +ssh-rsa
 
-Host openvpn
-  User openvpnas
-  Hostname 15.223.75.98
-  PreferredAuthentications publickey
-  IdentityFile ~/.ssh/pallaire-amazon-montreal.pem
-
 Host awscanada
   User ubuntu
   Hostname ec2-3-99-60-210.ca-central-1.compute.amazonaws.com
@@ -40,3 +34,13 @@ Host awscanada
 Host luc
   User pallaire
   Hostname jitsi.charland.org
+
+Host archie
+  User pallaire
+  Hostname 192.168.50.24
+  PreferredAuthentications publickey
+  IdentityFile ~/.ssh/pallaire_archie
+
+Host debsecurity
+  User pallaire
+  Hostname 192.168.50.70
