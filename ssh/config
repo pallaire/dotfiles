@@ -37,7 +37,7 @@ Host luc
 
 Host archie
   User pallaire
-  Hostname 192.168.50.24
+  Hostname 192.168.50.171
   PreferredAuthentications publickey
   IdentityFile ~/.ssh/pallaire_archie
 
