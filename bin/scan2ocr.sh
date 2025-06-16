@@ -24,27 +24,7 @@ scanimage --device-name="net:localhost:fujitsu:ScanSnap iX500:4624" --format=jpe
 
 # delete white pages
 for i in "${destwork}/scanpages"*.jpg; do
-  #   echo "Testing page ${i} for blanks"
-  #   histogram=$(magick "${i}" -threshold 50% -format %c histogram:info:-)
-  #
-  #   # Get the white and black values from the histogram
-  #   white=$(echo "${histogram}" | grep "white" | sed -n 's/^ *\(.*\):.*$/\1/p')
-  #   black=$(echo "${histogram}" | grep "black" | sed -n 's/^ *\(.*\):.*$/\1/p')
-  #
-  #   if [ -z $black ]; then
-  #     black=0
-  #   fi
-  #
-  #   # Calculate using bc, the percentage of black, if it is under 1/2 a percent, it is white
-  #   blank=$(echo "scale=4; ${black}/${white} < 0.005" | bc)
-  #
-  #   if [ ${blank} -eq "1" ]; then
-  #     pagenumber=$(echo "$i" | sed 's/[^0-9]//g')
-  #     echo "${pagenumber} is blank removing it"
-  #     mv "${i}" "${destdeleted}/${workdt}_${pagenumber}.jpg"
-  #   fi
   trashifblank.sh $i $workdt $destdeleted &
-
 done
 
 wait
