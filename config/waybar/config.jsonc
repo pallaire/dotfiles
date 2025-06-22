@@ -19,18 +19,14 @@
         "power-profiles-daemon"
     ],
     "hyprland/workspaces": {
-        "format": "<span size='small' font='normal Font Awesome 6 Free'>{icon}</span>",
+        // "format": "<span size='small' font='normal Font Awesome 6 Free'>{icon}</span>",
+        "all-outputs": true,
+        "active-only": false,
+        "format": "{name}",
         "on-click": "activate",
         "sort-by-number": true,
         "on-scroll-up": "hyprctl dispatch workspace e-1",
-        "on-scroll-down": "hyprctl dispatch workspace e+1",
-        "format-icons": {
-            "1": "1",
-            "2": "2",
-            "3": "3",
-            "4": "4",
-            "5": "5"
-        }
+        "on-scroll-down": "hyprctl dispatch workspace e+1"
     },
     "mpris": {
         "format": "{player_icon}  {title} - {artist}",
