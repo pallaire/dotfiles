@@ -1,5 +1,10 @@
 # Modify our PATH
-PATH=$PATH:$HOME/bin
+PATH=$HOME/bin:$PATH
+
+if [ -d "/opt/homebrew/bin" ]; then
+  PATH=/opt/homebrew/bin:$PATH
+fi
+
 
 # SOURCE this file at the end of the default .bashrc file for the system
 #
