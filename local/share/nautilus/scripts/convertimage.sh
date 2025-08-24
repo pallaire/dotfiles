@@ -5,7 +5,7 @@ OUTPUT_EXT=$(
     --title="Convert image type" \
     --print-column=2 \
     --column="File type" --column="Extension" \
-    JPEG jpeg PNG png WEBP webp
+    JPEG jpg PNG png WEBP webp
 )
 
 if [ -z $OUTPUT_EXT ]; then

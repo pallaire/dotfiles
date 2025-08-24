@@ -20,7 +20,8 @@ fi
 
 # Scan all the page with duplex to temp PNGs
 # scanimage --device-name="fujitsu:ScanSnap iX500:4624" --format=jpeg --mode Color --resolution 200 --brightness 16 --contrast 16 --source "ADF Duplex" --batch="${destwork}/scanpages%03d.jpg"
-scanimage --device-name="net:localhost:fujitsu:ScanSnap iX500:4624" --format=jpeg --mode Color --resolution 200 --brightness 16 --contrast 16 --source "ADF Duplex" --batch="${destwork}/scanpages%03d.jpg"
+# scanimage --device-name="net:localhost:fujitsu:ScanSnap iX500:4624" --format=jpeg --mode Color --resolution 200 --brightness 16 --contrast 16 --source "ADF Duplex" --batch="${destwork}/scanpages%03d.jpg"
+scanimage --device-name="fujitsu:ScanSnap iX500:4624" --format=jpeg --mode Color --resolution 200 --brightness 16 --contrast 16 --source "ADF Duplex" --batch="${destwork}/scanpages%03d.jpg"
 
 # delete white pages
 for i in "${destwork}/scanpages"*.jpg; do
