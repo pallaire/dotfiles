@@ -24,9 +24,11 @@ Host pallaire.com
   HostKeyAlgorithms +ssh-rsa
   PubkeyAcceptedKeyTypes +ssh-rsa
 
+
+# hostname : ec2-16-52-173-115.ca-central-1.compute.amazonaws.com
 Host awscanada
   User ubuntu
-  Hostname ec2-3-99-60-210.ca-central-1.compute.amazonaws.com
+  Hostname 16.52.173.115
   PreferredAuthentications publickey
   IdentityFile ~/.ssh/pallaire-amazon-montreal.pem
   DynamicForward 8080
