@@ -19,25 +19,25 @@ if [ ! -d "$destdeleted" ]; then
 fi
 
 # Scan all the page with duplex to temp PNGs
-# scanimage --device-name="fujitsu:ScanSnap iX500:4624" --format=jpeg --mode Color --resolution 200 --brightness 16 --contrast 16 --source "ADF Duplex" --batch="${destwork}/scanpages%03d.jpg"
-# scanimage --device-name="net:localhost:fujitsu:ScanSnap iX500:4624" --format=jpeg --mode Color --resolution 200 --brightness 16 --contrast 16 --source "ADF Duplex" --batch="${destwork}/scanpages%03d.jpg"
-scanimage --device-name="fujitsu:ScanSnap iX500:4624" --format=jpeg --mode Color --resolution 200 --brightness 16 --contrast 16 --source "ADF Duplex" --batch="${destwork}/scanpages%03d.jpg"
+# Setup the page size as LEGAL, if pages are LETTER the scaner will cut them automatically
+scanimage --device-name="fujitsu:ScanSnap iX500:4624" --format=tiff --mode Color --resolution 200 --brightness 16 --contrast 16 --source "ADF Duplex" --ald=yes --page-width 215.9 --page-height 355.6 -y 355.6 -x 215.9 --batch="${destwork}/scanpages%03d.tiff"
 
 # delete white pages
-for i in "${destwork}/scanpages"*.jpg; do
+for i in "${destwork}/scanpages"*.tiff; do
   trashifblank.sh $i $workdt $destdeleted &
 done
 
 wait
 
 # Merge all images to pdf
-magick "${destwork}/scanpages"*.jpg $tmpname
+magick "${destwork}/scanpages"*.tiff $tmpname
 
 # OCR the new PDF
 ocrmypdf -l eng+fra --force-ocr -d $tmpname $outname
 
 # Delete all images
 rm "${destwork}/scanpages"*.jpg
+rm "${destwork}/scanpages"*.tiff
 rm "${destwork}/scanpages.pdf"
 
 # Show the new file
