@@ -28,9 +28,16 @@ Host pallaire.com
 # hostname : ec2-16-52-173-115.ca-central-1.compute.amazonaws.com
 Host awscanada
   User ubuntu
-  Hostname 16.52.173.115
+  Hostname 35.183.186.13
   PreferredAuthentications publickey
   IdentityFile ~/.ssh/pallaire-amazon-montreal.pem
+  DynamicForward 8080
+
+Host docanada
+  User pallaire
+  Hostname 159.203.47.84
+  PreferredAuthentications publickey
+  IdentityFile ~/.ssh/pallaire-digitalocean
   DynamicForward 8080
 
 Host luc
