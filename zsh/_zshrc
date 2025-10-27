@@ -1,3 +1,10 @@
+ISTFILE=~/.histfile
+HISTSIZE=10000
+SAVEHIST=10000
+bindkey -v
+autoload -Uz compinit
+compinit
+
 # INSTALL the following: lsd duf dust bat btop neovim yazi starship
 
 # some more ls aliases
@@ -13,13 +20,8 @@ alias du='dust -d 1'
 alias df='duf'
 alias mc='yazi' # map midnight commander mc to yazi
 
-alias python=python3.13
-alias pip=pip3.13
+export PATH=~/bin:$PATH
 
-# Prompt
 eval "$(starship init zsh)"
 
-# Brew
-eval "$(/opt/homebrew/bin/brew shellenv)"
-
-export PATH=~/bin:$PATH
+fastfetch
