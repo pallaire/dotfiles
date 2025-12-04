@@ -1,0 +1,19 @@
+# --- TUI & visuals ---
+set pagination off
+set print pretty on
+tui enable
+layout src
+
+# --- Show variables automatically whenever execution stops ---
+# Only try to print vars when symbols are available and we're in a real frame.
+define hook-stop
+  echo \n── Frame ─────────────────────────────\n
+  frame
+  info args
+  info locals
+end
+
+# s : step ... this is step into
+# n : next ... this is step over 
+# r : run 
+# b ## : add break point at line
