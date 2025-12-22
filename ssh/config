@@ -25,13 +25,14 @@ Host pallaire.com
   PubkeyAcceptedKeyTypes +ssh-rsa
 
 
-# hostname : ec2-16-52-173-115.ca-central-1.compute.amazonaws.com
-# Host awscanada
-#   User ubuntu
-#   Hostname 35.183.186.13
-#   PreferredAuthentications publickey
-#   IdentityFile ~/.ssh/pallaire-amazon-montreal.pem
-#   DynamicForward 8080
+# hostname : ec2-35-183-133-183.ca-central-1.compute.amazonaws.com
+Host awscanada
+  User ubuntu
+  Hostname 35.183.133.183
+  IdentitiesOnly yes
+  PreferredAuthentications publickey
+  IdentityFile ~/.ssh/pallaire-amazon-montreal.pem
+  DynamicForward 8080
 
 Host docanada
   User pallaire
@@ -51,5 +52,6 @@ Host archie
   IdentityFile ~/.ssh/pallaire_archie
 
 Host pivpn
+  IdentitiesOnly yes
   User pallaire
   Hostname 192.168.50.16
