@@ -1,7 +1,6 @@
 ISTFILE=~/.histfile
 HISTSIZE=10000
 SAVEHIST=10000
-bindkey -v
 autoload -Uz compinit
 compinit
 
