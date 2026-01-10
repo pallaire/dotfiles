@@ -1,0 +1,10 @@
+[Unit]
+Description=Nightly Arch Linux Update Timer
+
+[Timer]
+OnCalendar=*-*-* 03:30
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+

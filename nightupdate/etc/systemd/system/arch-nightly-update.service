@@ -1,0 +1,8 @@
+[Unit]
+Description=Arch Nightly Update (pacman -Syu) and conditional reboot
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/arch-nightly-update.sh
