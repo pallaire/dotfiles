@@ -1,6 +1,12 @@
-ISTFILE=~/.histfile
-HISTSIZE=10000
-SAVEHIST=10000
+HISTSIZE=1000000
+SAVEHIST=1000000
+setopt append_history      # Append rather than overwrite the history file
+setopt extended_history    # Write the history file in the ":start:elapsed;command" format (adds timestamps)
+setopt share_history       # Share history between all active sessions and append to file immediately
+setopt hist_ignore_dups    # Don't record an entry that was just recorded again
+setopt hist_ignore_space   # Don't record an entry starting with a space
+setopt hist_verify         # Don't execute immediately upon history expansion
+
 autoload -Uz compinit
 compinit
 
@@ -14,12 +20,11 @@ alias lls='lsd -lS'
 alias llt='lsd -lt'
 
 alias top='btop'
-alias vim='nvim'
 alias du='dust -d 1'
 alias df='duf'
 alias mc='yazi' # map midnight commander mc to yazi
 
-export PATH=~/bin:$PATH
+export PATH=$HOME/bin:$HOME/.local/bin:$PATH
 
 eval "$(starship init zsh)"
 
