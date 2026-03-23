@@ -1,5 +1,5 @@
 # Modify our PATH
-PATH=$HOME/bin:$PATH
+PATH=$HOME/bin:$HOME/.local/bin:$PATH
 
 if [ -d "/opt/homebrew/bin" ]; then
   PATH=/opt/homebrew/bin:$PATH
@@ -18,7 +18,6 @@ alias lls='lsd -lS'
 alias llt='lsd -lt'
 
 alias top='btop'
-alias vim='nvim'
 alias du='dust -d 1'
 alias df='duf'
 alias mc='yazi' # map midnight commander mc to yazi
@@ -29,6 +28,11 @@ then
 else
 	alias cat='batcat'
 fi
+
+
+# pacman / yay utils
+alias yaytop="yay -Qe"
+alias yayaur="yay -Qm"
 
 
 # PROMPT

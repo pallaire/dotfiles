@@ -1,11 +1,11 @@
+HISTFILE=~/.zsh_history
 HISTSIZE=1000000
 SAVEHIST=1000000
-setopt append_history      # Append rather than overwrite the history file
-setopt extended_history    # Write the history file in the ":start:elapsed;command" format (adds timestamps)
-setopt share_history       # Share history between all active sessions and append to file immediately
-setopt hist_ignore_dups    # Don't record an entry that was just recorded again
-setopt hist_ignore_space   # Don't record an entry starting with a space
-setopt hist_verify         # Don't execute immediately upon history expansion
+setopt APPEND_HISTORY
+setopt SHARE_HISTORY
+setopt EXTENDED_HISTORY
+setopt HIST_IGNORE_DUPS
+setopt HIST_SAVE_NO_DUPS
 
 autoload -Uz compinit
 compinit
@@ -19,6 +19,7 @@ alias ll='lsd -l'
 alias lls='lsd -lS'
 alias llt='lsd -lt'
 
+alias cat='bat -P' 
 alias top='btop'
 alias du='dust -d 1'
 alias df='duf'

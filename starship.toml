@@ -1,2 +1,3 @@
 [directory]
-truncation_length = 0
+truncation_length = 2000
+truncate_to_repo = false

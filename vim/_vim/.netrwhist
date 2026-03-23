@@ -1,4 +1,8 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhistcnt =2
+let g:netrw_dirhistcnt =6
+let g:netrw_dirhist_6='/home/pallaire/devs/AdventCode/2025'
+let g:netrw_dirhist_5='/home/pallaire/.config/i3'
+let g:netrw_dirhist_4='/home/pallaire/devs/AdventCode/2025'
+let g:netrw_dirhist_3='/home/pallaire/devs/apercu/src'
 let g:netrw_dirhist_2='/home/pallaire/devs/gitch'
 let g:netrw_dirhist_1='/home/pallaire/devs/gitch/CMakeFiles'
