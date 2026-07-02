@@ -35,5 +35,12 @@ alias yaytop="yay -Qe"
 alias yayaur="yay -Qm"
 
 
+# AI
+if [ -f "$HOME/.bash_secrets" ]; then
+    source $HOME/.bash_secrets
+else
+	echo "Bash Secrets is missing at : $HOME/.bash_secrets"
+fi
+
 # PROMPT
 PS1='[\u@\[\e[34m\]\[\e[m\] \w]\$ '
