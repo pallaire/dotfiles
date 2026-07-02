@@ -36,7 +36,4 @@ alias yayaur="yay -Qm"
 
 
 # PROMPT
-# INSTALL Starship for prompt: 
-# curl -sS https://starship.rs/install.sh | sh
-eval "$(starship init bash)"
-
+PS1='[\u@\[\e[34m\]\[\e[m\] \w]\$ '
