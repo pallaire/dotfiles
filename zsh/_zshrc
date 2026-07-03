@@ -25,7 +25,7 @@ alias ll='lsd -l'
 alias lls='lsd -lS'
 alias llt='lsd -lt'
 
-alias cat='bat -P' 
+alias cat='bat -p' 
 alias top='btop'
 alias du='dust -d 1'
 alias df='duf'
@@ -33,10 +33,12 @@ alias mc='yazi' # map midnight commander mc to yazi
 
 export PATH=$HOME/bin:$HOME/.local/bin:$PATH
 
+# AI secrets
 if [[ -e "$HOME/.bash_secrets" ]]; then
     source $HOME/.bash_secrets
 else
 	echo "Bash Secrets is missing at : $HOME/.bash_secrets"
 fi
 
-eval "$(starship init zsh)"
+
+PS1='[%n@%F{blue}%f %~]$ '
