@@ -5,3 +5,5 @@ undodir
 
 #vim
 vim/_vim/bundle/*
+vim/_vim/.netrwhist
+vim/_vim/plugged
