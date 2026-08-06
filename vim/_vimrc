@@ -2,26 +2,27 @@
 " Config and Setup
 " =================================================================================================
 
-set autoindent                  " always set autoindenting on
-set autoread                    " autoupdate file on change
+set autoindent											" always set autoindenting on
+set autoread												" autoupdate file on change
 set backspace=indent,eol,start
-set clipboard=unnamedplus       " use default windows clipboard
-set encoding=utf-8              " default encoding to UTF8
-set foldlevel=99                " max folding levels
-set foldmethod=indent           " folding of code
+set clipboard=unnamed,unnamedplus   " use default windows clipboard
+set encoding=utf-8									" default encoding to UTF8
+set foldlevel=99										" max folding levels
+set foldmethod=indent           		" folding of code
 set hlsearch
-set ignorecase                  " ignore case when searching
-set incsearch                   " do incremental searching
-set mouse=nvi
-set nobackup                    " do not keep a backup file
+set ignorecase                  		" ignore case when searching
+set incsearch                   		" do incremental searching
+set mouse=a
+set nobackup                    		" do not keep a backup file
 set noexpandtab
 set nowrap
-set ruler                       " show the cursor position all the time
+set ruler                       		" show the cursor position all the time
 set scrolloff=3
-set smartindent                 " smart indent
+set smartindent                 		" smart indent
 set splitbelow
 set splitright
-set ttyfast                     " smoother changes
+set ttyfast                     		" smoother changes
+set ttymouse=sgr
 set visualbell
 
 set tabstop=2

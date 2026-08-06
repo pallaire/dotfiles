@@ -108,11 +108,11 @@ if (has('termguicolors') && &termguicolors) || has('gui_running')
   hi Todo guifg=NONE guibg=#0088FF guisp=NONE gui=italic cterm=italic
   hi ColorColumn guifg=NONE guibg=#020511 guisp=NONE gui=NONE cterm=NONE
   hi Conceal guisp=NONE gui=NONE cterm=NONE
-  hi Normal guifg=#FFFFFF guibg=#17252c guisp=NONE gui=NONE cterm=NONE
+  hi Normal guifg=#FFFFFF guibg=#1E2E3F guisp=NONE gui=NONE cterm=NONE
   hi Cursor guifg=NONE guibg=#3A3A3A guisp=NONE gui=NONE cterm=NONE
   hi CursorIM guisp=NONE gui=NONE cterm=NONE
   hi CursorColumn guifg=NONE guibg=#3A3A3A guisp=NONE gui=NONE cterm=NONE
-  hi CursorLine guifg=NONE guibg=#17252c guisp=NONE gui=NONE cterm=NONE
+  hi CursorLine guifg=NONE guibg=#1E2E3F guisp=NONE gui=NONE cterm=NONE
   hi CursorLineNr guifg=#FFC600 guibg=NONE guisp=NONE gui=NONE cterm=NONE
   hi FoldColumn guifg=#626262 guibg=NONE guisp=NONE gui=NONE cterm=NONE
   hi SignColumn guifg=#626262 guibg=NONE guisp=NONE gui=NONE cterm=NONE
@@ -326,7 +326,7 @@ endif
 " Color: light_green			#88FF88 ~
 " Color: purple			      #967EFB ~
 " Color: darker_cobalt		#020511 ~
-" Color: cobalt			      #17252c ~
+" Color: cobalt			      #1E2E3F ~
 " Color: darker_blue			#0050A4 ~
 " Color: dark_blue			  #0088FF ~
 " Color: blue			        #00AAFF ~
