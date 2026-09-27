@@ -31,7 +31,7 @@ alias llt='lsd -lt'
 alias cat='bat -P -p' 
 alias top='btop'
 alias du='dust -d 1'
-alias df='duf'
+alias df="duf --hide-mp '*time*'"
 alias mc='yazi' # map midnight commander mc to yazi
 alias python='python3'
 
@@ -45,4 +45,4 @@ else
 fi
 
 
-PS1='[%n@%F{blue}󰀵%f %~]$ '
+PS1='[%n@%F{yellow}󰀵%f %~]$ '

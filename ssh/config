@@ -53,7 +53,7 @@ Host archie
 
 Host lizard
   User pallaire
-  Hostname 192.168.50.70
+  Hostname lizard 
   PreferredAuthentications publickey
   IdentitiesOnly yes
   IdentityFile ~/.ssh/pallaire_archie
