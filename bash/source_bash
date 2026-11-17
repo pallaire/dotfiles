@@ -5,6 +5,9 @@ if [ -d "/opt/homebrew/bin" ]; then
   PATH=/opt/homebrew/bin:$PATH
 fi
 
+# Editors
+export EDITOR=vim
+export VISUAL=vim
 
 # SOURCE this file at the end of the default .bashrc file for the system
 #
