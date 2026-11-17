@@ -1,20 +1,28 @@
 #!/usr/bin/env bash
 #
-# rename-scans.sh — rename scanned PDFs using Claude Code CLI
+# rename-scans.sh — fetch scanned PDFs from the NAS and rename them using Claude Code CLI
 #
 # Name format:  YYYY-mm-dd - Sender - Reason - Recipient.pdf
 #   e.g.        2026-03-14 - SoCal Edison - Electricity bill - House.pdf
 #               2026-06-02 - Desert Vet - Annual vaccines - Sardine and Red.pdf
 #               2026-08-20 - California DMV - Registration renewal - Vehicle F350.pdf
 #
-# Usage:  rename-scans.sh [-n] [-f] [-m model] [folder]
-#   -n   dry run: show what would be renamed, change nothing
-#   -f   also process files that already look renamed (start with a date)
+# Usage:  rename-scans.sh [-n] [-r] [-m model] [smb://host/share/path]
+#   -n   dry run: download and show what would be renamed; nothing is moved or deleted on the NAS
+#   -r   forget the saved NAS login and ask again
 #   -m   Claude model alias (e.g. haiku, sonnet). Default: CLI default
-#   folder defaults to ~/scans
+#   The NAS folder defaults to $SCANS_URL, else smb://lizard/NAS/scans/
 #
-# Needs: claude (Claude Code CLI, logged in), pdftotext + pdfinfo (poppler), jq, iconv
-#   macOS: brew install poppler jq      Arch: sudo pacman -S poppler jq
+# PDFs are downloaded from the NAS, renamed, moved to ~/Downloads/scans/ (or $SCANS_DEST),
+# then deleted from the NAS. Every file is read and named from its content, even if its
+# current name already starts with a date (the scanner names files by scan date).
+# Flagged files (Claude could not name them) stay on the NAS untouched.
+#
+# The NAS user name and password are asked once, checked, and saved in the system keyring:
+#   macOS: Keychain (security)     Linux: Secret Service via secret-tool (gnome-keyring, KeePassXC...)
+#
+# Needs: claude (Claude Code CLI, logged in), smbclient, pdftotext + pdfinfo (poppler), jq, iconv
+#   macOS: brew install poppler jq samba      Arch: sudo pacman -S poppler jq smbclient libsecret
 # Works with the stock macOS bash 3.2 as well as bash 4/5.
 
 set -uo pipefail
@@ -27,20 +35,21 @@ MIN_TEXT_CHARS=80      # below this, the PDF is treated as image-only and Claude
 TEXT_PAGES=3           # pages of text sent to Claude (sender/date are almost always up front)
 
 DRY_RUN=0
-FORCE=0
+RESET_LOGIN=0
 MODEL="${CLAUDE_MODEL:-}"
 
-while getopts ":nfm:h" opt; do
+while getopts ":nrm:h" opt; do
   case $opt in
     n) DRY_RUN=1 ;;
-    f) FORCE=1 ;;
+    r) RESET_LOGIN=1 ;;
     m) MODEL="$OPTARG" ;;
-    h) sed -n '2,20p' "$0"; exit 0 ;;
+    h) sed -n '2,/^$/p' "$0"; exit 0 ;;
     *) echo "Unknown option. Use -h for help." >&2; exit 2 ;;
   esac
 done
 shift $((OPTIND - 1))
-DIR="${1:-$HOME/scans}"
+NAS_URL="${1:-${SCANS_URL:-smb://lizard/NAS/scans/}}"
+DEST="${SCANS_DEST:-$HOME/Downloads/scans}"
 
 # ---------- colors ----------
 if [[ -t 1 ]]; then
@@ -52,10 +61,28 @@ fi
 flag() { printf '%s✗ %s%s\n' "$RED" "$1" "$RESET"; [[ -n "${2:-}" ]] && printf '%s    %s%s\n' "$RED" "$2" "$RESET"; }
 
 # ---------- checks ----------
-for cmd in claude pdftotext pdfinfo jq iconv; do
-  command -v "$cmd" >/dev/null || { echo "${RED}Missing dependency: $cmd${RESET}" >&2; exit 1; }
+die() { printf '%s%s%s\n' "$RED" "$1" "$RESET" >&2; exit 1; }
+
+for cmd in claude smbclient pdftotext pdfinfo jq iconv; do
+  command -v "$cmd" >/dev/null || die "Missing dependency: $cmd"
 done
-[[ -d "$DIR" ]] || { echo "${RED}Folder not found: $DIR${RESET}" >&2; exit 1; }
+if [[ "$(uname -s)" == "Darwin" ]]; then
+  KEYRING=macos
+else
+  KEYRING=secret-tool
+  command -v secret-tool >/dev/null || die "Missing dependency: secret-tool (Arch: sudo pacman -S libsecret gnome-keyring)"
+fi
+
+# smb://host/share/sub/dir/  ->  SERVICE=//host/share   RPATH=sub/dir
+url="${NAS_URL#smb://}"; url="${url%/}"
+NAS_HOST="${url%%/*}"; rest="${url#*/}"
+[[ "$rest" == "$url" || -z "$NAS_HOST" ]] && die "Bad NAS URL (want smb://host/share/path): $NAS_URL"
+NAS_SHARE="${rest%%/*}"
+RPATH=""; [[ "$rest" == */* ]] && RPATH="${rest#*/}"
+SERVICE="//$NAS_HOST/$NAS_SHARE"
+CD_CMD=""; [[ -n "$RPATH" ]] && CD_CMD="cd \"$RPATH\"; "
+
+mkdir -p "$DEST" || die "Cannot create $DEST"
 
 # Model flag kept as plain words (bash 3.2 on macOS treats an empty array as unbound under set -u).
 MODEL_FLAG=""
@@ -121,7 +148,105 @@ valid_date() {
   [[ "$d" == "$1" ]]   # rejects impossible dates like 2026-02-30
 }
 
-ERR_FILE=$(mktemp); trap 'rm -f "$ERR_FILE"' EXIT
+ERR_FILE=$(mktemp)
+AUTH_DIR=$(mktemp -d)   # private (0700) dir holding the smbclient credentials file while the script runs
+STAGE=$(mktemp -d "$DEST/.incoming.XXXXXX") || die "Cannot create a staging folder in $DEST"
+trap 'rm -rf "$ERR_FILE" "$ERR_FILE.tmp" "$AUTH_DIR" "$STAGE"' EXIT
+trap 'exit 130' INT TERM
+AUTH_FILE="$AUTH_DIR/auth"
+
+# ---------- NAS login (system keyring) ----------
+KEY_SERVICE="rename-scans"
+SMB_USER=""; SMB_PASS=""
+
+cred_load() {
+  case $KEYRING in
+    macos)
+      SMB_PASS=$(security find-generic-password -s "$KEY_SERVICE" -a "$NAS_HOST" -w 2>/dev/null) || return 1
+      SMB_USER=$(security find-generic-password -s "$KEY_SERVICE" -a "$NAS_HOST" 2>/dev/null |
+                 sed -n 's/^.*"icmt"<blob>="\(.*\)"$/\1/p')
+      ;;
+    secret-tool)
+      SMB_PASS=$(secret-tool lookup service "$KEY_SERVICE" server "$NAS_HOST" 2>/dev/null) || return 1
+      # (secret-tool prints the attributes on stderr; drop stdout, which holds the secret)
+      SMB_USER=$(secret-tool search service "$KEY_SERVICE" server "$NAS_HOST" 2>&1 >/dev/null |
+                 sed -n 's/^attribute\.user = //p' | head -n 1)
+      ;;
+  esac
+  [[ -n "$SMB_USER" && -n "$SMB_PASS" ]]
+}
+
+cred_forget() {
+  case $KEYRING in
+    macos)       security delete-generic-password -s "$KEY_SERVICE" -a "$NAS_HOST" >/dev/null 2>&1 ;;
+    secret-tool) secret-tool clear service "$KEY_SERVICE" server "$NAS_HOST" 2>/dev/null ;;
+  esac
+  return 0
+}
+
+cred_save() {
+  cred_forget
+  case $KEYRING in
+    macos)
+      # Account = NAS host, comment = user name, so one item per NAS.
+      security add-generic-password -U -s "$KEY_SERVICE" -a "$NAS_HOST" -j "$SMB_USER" \
+        -l "rename-scans NAS login ($NAS_HOST)" -w "$SMB_PASS" >/dev/null ;;
+    secret-tool)
+      # Password goes through stdin, never on the command line.
+      printf '%s' "$SMB_PASS" | secret-tool store --label="rename-scans NAS login ($NAS_HOST)" \
+        service "$KEY_SERVICE" server "$NAS_HOST" user "$SMB_USER" ;;
+  esac
+}
+
+cred_ask() {
+  { : >/dev/tty; } 2>/dev/null || die "No saved NAS login and no terminal to ask for one. Run the script once interactively."
+  local u p
+  printf 'NAS user name for %s%s: ' "$SERVICE" "${SMB_USER:+ [$SMB_USER]}" >/dev/tty
+  IFS= read -r u </dev/tty
+  printf 'Password: ' >/dev/tty
+  IFS= read -rs p </dev/tty; printf '\n' >/dev/tty
+  SMB_USER="${u:-$SMB_USER}"; SMB_PASS="$p"
+  [[ -n "$SMB_USER" && -n "$SMB_PASS" ]] || die "User name and password are both needed."
+}
+
+write_auth() {
+  ( umask 077; printf 'username = %s\npassword = %s\n' "$SMB_USER" "$SMB_PASS" >"$AUTH_FILE" )
+}
+
+# Run smbclient commands against the share. Output (stdout+stderr) on stdout; fails on any NT_STATUS error.
+smb() {
+  local out rc
+  out=$(smbclient "$SERVICE" -A "$AUTH_FILE" -c "$1" </dev/null 2>&1); rc=$?
+  printf '%s\n' "$out"
+  (( rc == 0 )) && ! grep -q 'NT_STATUS_' <<<"$out"
+}
+
+# Log in: saved credentials first, then ask (up to 3 tries). Save only once the login works.
+nas_login() {
+  local tries=0 out from_keyring=0
+  if (( RESET_LOGIN )); then cred_forget; elif cred_load; then from_keyring=1; fi
+  (( from_keyring )) || cred_ask
+  while :; do
+    write_auth
+    if out=$(smb "${CD_CMD}pwd"); then
+      (( from_keyring )) || { cred_save || die "Could not save the login in the keyring (is it unlocked/running?)"; echo "${DIM}NAS login saved in the keyring.${RESET}"; }
+      return 0
+    fi
+    if grep -qE 'NT_STATUS_(LOGON_FAILURE|ACCESS_DENIED|ACCOUNT_|PASSWORD_|WRONG_PASSWORD)' <<<"$out"; then
+      ((tries++)); (( tries >= 3 )) && die "NAS login failed 3 times."
+      echo "${RED}NAS login refused.${RESET}" >&2
+      from_keyring=0; cred_ask
+      continue
+    fi
+    die "Cannot reach $NAS_URL: $(grep -m1 -E 'NT_STATUS_|error|failed' <<<"$out")"
+  done
+}
+
+# Delete one file from the NAS folder.
+nas_delete() {
+  smb "${CD_CMD}del \"$1\"" >"$ERR_FILE.tmp" 2>&1
+}
+
 RETRIES=3
 
 # One claude call. stdout = the model's reply text. On failure, the reason is left in $ERR_FILE.
@@ -177,17 +302,43 @@ ask_claude() {
   done
 }
 
+# Move a local file into $DEST (never overwriting: adds (2), (3)…), then delete the original from the NAS.
+# $1 = local file, $2 = name on the NAS, $3 = wanted base name (no .pdf)
+deliver() {
+  local f="$1" remote="$2" base="$3" target n=2
+  target="$DEST/$base.pdf"
+  while [[ -e "$target" ]]; do target="$DEST/$base ($n).pdf"; ((n++)); done
+
+  if (( DRY_RUN )); then
+    printf '%s  → %s (dry run)%s\n' "$GREEN" "$(basename "$target")" "$RESET"
+    return 0
+  fi
+  mv -n -- "$f" "$target" && [[ -s "$target" ]] || { flag "$remote" "Could not move to $target — left on the NAS"; return 1; }
+  printf '%s  → %s%s\n' "$GREEN" "$(basename "$target")" "$RESET"
+  nas_delete "$remote" ||
+    printf '%s    could not delete from NAS: %s%s\n' "$YELLOW" "$(grep -m1 NT_STATUS_ "$ERR_FILE.tmp")" "$RESET"
+  return 0
+}
+
+# ---------- fetch from NAS ----------
+nas_login
+echo "${DIM}Fetching PDFs from $NAS_URL …${RESET}"
+if ! out=$(smb "${CD_CMD}lcd \"$STAGE\"; prompt off; recurse off; mget *.pdf"); then
+  # An empty folder is not an error.
+  grep -qE 'NT_STATUS_NO_SUCH_FILE|NT_STATUS_OBJECT_NAME_NOT_FOUND' <<<"$out" && ! grep -q 'getting file' <<<"$out" ||
+    die "Download failed: $(grep -m1 NT_STATUS_ <<<"$out")"
+fi
+
 # ---------- main loop ----------
-renamed=0; flagged=0; skipped=0
-NAMED_RE='^[0-9]{4}-[0-9]{2}-[0-9]{2}( - |-)'   # already renamed (new or old style)
+renamed=0; flagged=0
 
 while IFS= read -r -d '' f <&3; do
   name=$(basename "$f")
 
-  if (( ! FORCE )) && [[ "$name" =~ $NAMED_RE ]]; then
-    printf '%s• skip (already named): %s%s\n' "$DIM" "$name" "$RESET"
-    ((skipped++)); continue
+  if [[ ! -s "$f" ]]; then
+    flag "$name" "Empty or incomplete download — left on the NAS"; ((flagged++)); continue
   fi
+
 
   printf '… %s\n' "$name"
 
@@ -268,20 +419,12 @@ while IFS= read -r -d '' f <&3; do
     base="${base:0:MAX_TOTAL}"; base="${base%" - "}"; base="${base%" -"}"; base="${base% }"
   fi
 
-  # Never overwrite: add (2), (3)… if the name is taken.
-  target="$DIR/$base.pdf"; n=2
-  while [[ -e "$target" ]]; do target="$DIR/$base ($n).pdf"; ((n++)); done
+  if deliver "$f" "$name" "$base"; then ((renamed++)); else ((flagged++)); fi
 
-  if (( DRY_RUN )); then
-    printf '%s  → %s (dry run)%s\n' "$GREEN" "$(basename "$target")" "$RESET"
-  else
-    mv -n -- "$f" "$target" && printf '%s  → %s%s\n' "$GREEN" "$(basename "$target")" "$RESET"
-  fi
-  ((renamed++))
-
-done 3< <(find "$DIR" -maxdepth 1 -type f -iname '*.pdf' -print0 | sort -z)
+done 3< <(find "$STAGE" -maxdepth 1 -type f -iname '*.pdf' -print0 | sort -z)
 
 echo
-printf '%sRenamed: %d%s   %sFlagged: %d%s   Skipped: %d\n' \
-  "$GREEN" "$renamed" "$RESET" "$RED" "$flagged" "$RESET" "$skipped"
+printf '%sRenamed: %d%s   %sFlagged (left on NAS): %d%s\n' \
+  "$GREEN" "$renamed" "$RESET" "$RED" "$flagged" "$RESET"
+(( DRY_RUN )) && echo "${DIM}Dry run: nothing was moved or deleted from the NAS.${RESET}"
 (( flagged == 0 ))
